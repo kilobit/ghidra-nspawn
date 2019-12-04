@@ -45,8 +45,10 @@ clean: container_clean
 # Build the nspawn environment.
 container_path	:= "./ghidra"
 container_user	:= ghidra
+container_xauth := ./container_xauth
 ghidra_repo	:= "https://aur.archlinux.org/ghidra-git.git"
 ghidra_dir	:= "/home/ghidra/ghidra-git/"
+work_dir	:= ./work
 
 .PHONY: container_bootstrap container_networking container ghidra container_clean
 
@@ -54,7 +56,7 @@ $(container_path):
 	mkdir -p $(container_path)
 
 container_bootstrap: $(container_path)
-	sudo pacstrap -i -c -d $(container_path) base base-devel git java-environment --ignore linux --ignore linux-firmware
+	sudo pacstrap -i -c -d $(container_path) base base-devel git java-environment libxext libxrender libxtst --ignore linux --ignore linux-firmware
 
 container_networking: container_bootstrap
 	sudo systemd-nspawn --directory=$(container_path) systemctl enable systemd-networkd
@@ -67,7 +69,13 @@ container_users: container_bootstrap
 		echo "$(container_user)  ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/99_sudo_include_file; \
 	fi'
 
+$(container_xauth):
+	xauth nextract - "$$DISPLAY" | sed -e 's/^..../ffff/' | xauth -f "$(container_xauth)" nmerge -
+
 container: container_bootstrap container_networking container_users
+
+$(work_dir):
+	mkdir -p $(work_dir)
 
 ghidra: container
 	sudo systemd-nspawn --directory=$(container_path) --user=$(container_user) sh -c "if [ ! -e $(ghidra_dir) ]; then git clone $(ghidra_repo) $(ghidra_dir); fi"
@@ -75,3 +83,11 @@ ghidra: container
 
 container_clean:
 	sudo rm -rf $(container_path)
+
+shell: $(container_xauth) $(work_dir)
+	sudo systemd-nspawn --directory=$(container_path) --chdir=/home/$(container_user) \
+	--user=$(container_user) --bind="$(realpath $(work_dir)):/home/$(container_user)/work" \
+	--bind-ro=/tmp/.X11-unix --bind-ro="$(realpath $(container_xauth)):/home/$(container_user)/.Xauthority" \
+	--setenv=DISPLAY=$(DISPLAY) --setenv=XAUTHORITY="/home/$(container_user)/.Xauthority" bash
+
+run:
