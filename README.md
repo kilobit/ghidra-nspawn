@@ -14,6 +14,10 @@ Engineering tools such as
 *Ghidra* was built by the US NSA and released as 
 [open source](https://github.com/NationalSecurityAgency/ghidra).
 
+Why *Make*?  [*GNU Make*](https://www.gnu.org/software/make/) is a
+fantastic tool for builds as well as repeated operations, particularly
+for file based artifacts.
+
 Status: Working
 
 Build with one command:
@@ -24,7 +28,7 @@ $ make
 ```
 Building will require sudo access to the local machine and you will
 have to acknowledge the continuation prompts.  All of the defaults
-seem to be work.  The *Enter/Return* key is your friend.
+seem to work.  The *Enter/Return* key is your friend.
 
 Launch Ghidra with 2:
 ```{.bash}
@@ -38,7 +42,9 @@ Press ^] three times within 1s to kill container.
 ```
 
 As nspawn is running a container, it will require *sudo* access to
-run.  Ghidra-nspawn is meant to leave no trace on the host machine and
+run.
+
+Ghidra-nspawn is meant to leave no trace on the host machine and
 so it is not currently designed to be installed and administered with
 *machinectl* etc.  Please consider contributing if this would be a
 useful feature.
@@ -52,7 +58,9 @@ Features
 - *clean* target removes all downloaded and generated components.
 
 To-Do:
+
 - Make the build process standalone.
+- Add update / upgrade capabilities.
 - Launch Ghidra with a single command (possibly shell).
 - Expand this into a full SRE environment.
 
@@ -83,6 +91,9 @@ Support
 -------
 
 Submit tickets through [github](https://github.com/kilobit/ghidra-nspawn).
+
+Please see the Ghidra documentation or ghidra-git package for issues
+regarding those components.
 
 License
 -------
