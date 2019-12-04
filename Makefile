@@ -56,7 +56,8 @@ $(container_path):
 	mkdir -p $(container_path)
 
 container_bootstrap: $(container_path)
-	sudo pacstrap -i -c -d $(container_path) base base-devel git java-environment libxext libxrender libxtst --ignore linux --ignore linux-firmware
+	sudo pacstrap -i -c -d $(container_path) base base-devel git java-environment unzip gtk3 \
+	--ignore linux --ignore linux-firmware
 
 container_networking: container_bootstrap
 	sudo systemd-nspawn --directory=$(container_path) systemctl enable systemd-networkd
