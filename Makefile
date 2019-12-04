@@ -5,7 +5,7 @@
 # @Author: Christian Saunders
 # @Created: Dec 3, 2019
 # @Company: Kilobit Labs Inc.
-# @Licence: Copyright 2019
+# @Licence: Copyright 2019 - See LICENSE
 #
 
 exec_dir        := $(shell pwd)
@@ -22,7 +22,7 @@ project         := ghidra
 all: title $(project) end
 
 title:
-	@echo -e "Setting Up The Android Environment"
+	@echo -e "Setting Up The Ghidra Environment"
 	@echo -e "========================================="
 	@echo -e ""
 
@@ -38,7 +38,7 @@ vars: vars_sdk vars_android_sh
 	@echo -e "Execution Directory: $(exec_dir)"
 	@echo -e "Makefile Path: $(mkfile_path)"
 
-install: install_android_sh
+install:
 
 clean: container_clean
 
